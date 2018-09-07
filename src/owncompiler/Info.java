@@ -15,9 +15,12 @@ import java.util.ArrayList;
 
 public class Info {
 
+    ArrayList<names> OperatorsList = new ArrayList<names>();
+    ArrayList<names> KeywordsList = new ArrayList<names>();
+    ArrayList<names> PunctatorsList = new ArrayList<names>();
     public Info()
     {
-        ArrayList<names> OperatorsList = new ArrayList<names>();
+        
         
         //For Operators
         OperatorsList.add(new names("arithmatic operator","+"));
@@ -51,7 +54,7 @@ public class Info {
         // keywordslist may if ka incase likha hai menay ab dheklena ya toa if ki jaga condition likhdo ya if hee 
         // rehny do UP TO YOU.....
         
-        ArrayList<names> KeywordsList = new ArrayList<names>();
+        
         KeywordsList.add(new names("if","incase"));
         KeywordsList.add(new names("else","otherwise"));
         KeywordsList.add(new names("swtich","change"));
@@ -83,7 +86,7 @@ public class Info {
         
         
         
-        ArrayList<names> PunctatorsList = new ArrayList<names>();
+        
         PunctatorsList.add(new names("Dot","."));
         PunctatorsList.add(new names("Endpunctuator",";"));
         PunctatorsList.add(new names("Comma",","));
