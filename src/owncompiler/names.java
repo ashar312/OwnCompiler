@@ -9,15 +9,14 @@ package owncompiler;
  *
  * @author Ashar Ashfaq
  */
-public class OwnCompiler {
+public class names {
+    
+    String name;
+    String value;
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-     
-        Lexical_analyzer lex = new Lexical_analyzer();
-        
+    public names(String name, String value) {
+        this.name = name;
+        this.value = value;
     }
     
 }

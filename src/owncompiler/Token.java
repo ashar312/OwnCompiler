@@ -9,15 +9,18 @@ package owncompiler;
  *
  * @author Ashar Ashfaq
  */
-public class OwnCompiler {
+public class Token {
+    
+    String classpart;
+    String valuepart;
+    int line;
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-     
-        Lexical_analyzer lex = new Lexical_analyzer();
-        
+    public Token(String classpart, String valuepart, int line) {
+        this.classpart = classpart;
+        this.valuepart = valuepart;
+        this.line = line;
     }
+    
+    
     
 }
