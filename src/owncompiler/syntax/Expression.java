@@ -293,16 +293,65 @@ public class Expression extends Syntax {
     }
     private boolean F(){
         if(first()){
-            
+            if(ToCheckIfTrue("ID")){
+                index++;
+                if(FF()){
+                    
+                }
+            }
+            else if(checkkey.Constant()){
+                index++;
+            }
+            else if(ToCheckIfTrue("(")){
+                index++;
+                if(OE()){
+                    if(ToCheckIfTrue(")")){
+                        index++;
+                        return true;
+                    }
+                }
+            }
         }
         return false;
     }
     private boolean FF(){
-        
+        if(ToCheckIfTrue("[") || first()){
+            if(ToCheckIfTrue("[")){
+                index++;
+                if(OE()){
+                    if(ToCheckIfTrue("]")){
+                        if(FFF()){
+                            return true;
+                        }
+                    }
+                }
+            }
+            else if(para()){
+                if(para3()){
+                    return true;
+                }
+            }
+            else if(ToCheckIfTrue("IncDec") || ToCheckIfTrue("MDM")
+                    || ToCheckIfTrue("PM") || ToCheckIfTrue("ShOP") 
+                    || ToCheckIfTrue("RP") || signs()){
+                return true;
+            }
+        }
+            
         return false;
     }
     private boolean FFF(){
-        
+        if(ToCheckIfTrue(".")){
+            index++;
+            if(ToCheckIfTrue("ID")){
+                return true;
+            }
+        }
+        else if(ToCheckIfTrue("IncDec") || ToCheckIfTrue("MDM")
+                    || ToCheckIfTrue("PM") || ToCheckIfTrue("ShOP") 
+                    || ToCheckIfTrue("RP") || signs()){
+            return true;
+        }
         return false;
     }
     
