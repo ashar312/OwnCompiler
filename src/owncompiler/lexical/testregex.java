@@ -1,5 +1,5 @@
 
-package owncompiler;
+package owncompiler.lexical;
 
 
 public class testregex {

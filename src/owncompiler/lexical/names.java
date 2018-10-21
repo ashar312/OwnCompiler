@@ -3,20 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package owncompiler;
+package owncompiler.lexical;
 
 /**
  *
- * @author Ashar Ashfaq
+ * @author Bismah Rasheed
  */
 public class names {
     
-    String name;
-    String value;
+    String className;
+    String word;
 
     public names(String name, String value) {
-        this.name = name;
-        this.value = value;
+        this.className = name;
+        this.word = value;
     }
     
 }

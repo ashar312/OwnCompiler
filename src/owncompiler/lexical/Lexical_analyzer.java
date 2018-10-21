@@ -3,25 +3,27 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package owncompiler;
+package owncompiler.lexical;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.Arrays;
 
 /**
  *
- * @author Bisma Rasheed
+ * @author Bismah Rasheed
  */
 public class Lexical_analyzer {
     
     String text = "";
     Token token=new Token();    
-    ArrayList<Token> tokenlist = new ArrayList<>(); //to save tokens to be used in the next phase
+    public ArrayList<Token> tokenlist = new ArrayList<>(); //to save tokens to be used in the next phase
     char[] charArray = {};
     char[] digits={'0','1','2','3','4','5','6','7','8','9'}; //for the matching of character before and after dot
+    char[] characters ={'r','t','f','b','n','\\','\'','\"','0','1','2','3','4','5','6','7'};
     
     
     
@@ -29,7 +31,6 @@ public class Lexical_analyzer {
     {
         this.token.lineNumber=0;
         ReadFromTextFile();
-        
     }
     
     
@@ -38,6 +39,7 @@ public class Lexical_analyzer {
     {
             File file = new File("src\\TokenSetFile.txt");
             FileWriter fileWriter = new FileWriter(file);
+            //System.out.println(tokenlist);
         try (BufferedWriter writer = new BufferedWriter(fileWriter)) {
             for(int i=0;i<tokenlist.size();i++)
             {
@@ -85,11 +87,9 @@ public class Lexical_analyzer {
         int linecounter=1;
         try {
             File file = new File("src\\SourceCodeFile.txt");
-            StringBuffer stringBuffer;
             try (FileReader fileReader = new FileReader(file)) 
             {
                 BufferedReader bufferedReader = new BufferedReader(fileReader);
-                stringBuffer = new StringBuffer();
                 String line;
                 while ((line = bufferedReader.readLine()) != null) 
                 {
@@ -119,14 +119,15 @@ public class Lexical_analyzer {
     
     public void wordSeperator() throws IOException
     {
-        String word="";
         
+        String word="";
+       
         for(int i=0;i<charArray.length;i++) //for loop to read whole char array sent from the buffered reader from Readfile func
         {
             
             if(charArray[i]!='\'' && charArray[i]!='\"' && charArray[i]!=' ' && charArray[i]!= ';' && charArray[i]!= '(' && charArray[i]!= ')' && charArray[i]!= '{' &&
             charArray[i]!= '}' && charArray[i]!='[' && charArray[i]!= ']' && charArray[i]!= '~' && charArray[i]!= '`' &&
-                    charArray[i]!='@' && charArray[i]!='#' && charArray[i]!='$'
+                    charArray[i]!='@' && charArray[i]!='#'
             && charArray[i]!= '^' && charArray[i]!= '&' && charArray[i]!= '\\' && charArray[i]!= ':' && charArray[i]!= ','
             && charArray[i]!= '<' && charArray[i]!= '!' && charArray[i]!= '+' && charArray[i]!= '-' && charArray[i]!= '>'
             && charArray[i]!= '/' && charArray[i]!= '*' && charArray[i]!= '%' && charArray[i]!= '=' && charArray[i]!='.'
@@ -277,9 +278,16 @@ public class Lexical_analyzer {
                 {
                     if(word.contains("\""))
                     {
-                        if(charArray[i-1]=='\\') //checks if the recent " is preceded by a \ if yes then its part of the 
+                        String s=Arrays.toString(charArray);
+                        if(s.contains("\\\\") || s.contains("\\\\\\\\")) //checks if the recent " is preceded by a \ if yes then its part of the 
                             //string so stores it and continues otherwise the recent " is the ending " stores it and make token
                             //of the word
+                        {
+                            word=word+charArray[i];
+                            Tokenization(word,token.lineNumber);
+                            word="";
+                        }
+                        else if(charArray[i-1]=='\\')
                         {
                             word=word+charArray[i];
                         }
@@ -292,10 +300,10 @@ public class Lexical_analyzer {
                     }
                     else
                     {
-                        word=word+charArray[i];
-                        //Tokenization(word,token.lineNumber);
-                        //word="";
-                        //i--;
+                        //word=word+charArray[i];
+                        Tokenization(word,token.lineNumber);
+                        word="";
+                        i--;
                     }
                 }
             }
@@ -304,7 +312,7 @@ public class Lexical_analyzer {
             {
                 if("".equals(word))
                 {
-                    if(charArray[i+1]!='\\') //if a \ is there then stores 4 characters together including starting and ending
+                    if((i+1)<charArray.length && charArray[i+1]!='\\') //if a \ is there then stores 4 characters together including starting and ending
                         //' otherwise stores 3 characters together in a word.
                     {
                         word=word+charArray[i];
@@ -320,7 +328,7 @@ public class Lexical_analyzer {
                         word="";
                         i=i+2;
                     }
-                    else if(charArray[i+1]=='\\')
+                    else if((i+1)<charArray.length && charArray[i+1]=='\\')
                     {
                         word=word+charArray[i];
                         word=word+charArray[i+1];
@@ -348,10 +356,10 @@ public class Lexical_analyzer {
                 }
                 else if(!"".equals(word)) //if word is not empty then stores ' along with the word as ' is not a word breaker
                 {
-                    word=word+charArray[i];
-                    //Tokenization(word,token.lineNumber);
-                    //word="";
-                    //i--;
+                    //word=word+charArray[i];
+                    Tokenization(word,token.lineNumber);
+                    word="";
+                    i--;
                 }
             }
             
@@ -486,7 +494,15 @@ public class Lexical_analyzer {
             {
                 if("".equals(word))
                 {
-                if( ((i+1)<charArray.length && charArray[i+1]=='='))
+                if((i+1)<charArray.length && (charArray[i+1]=='=' || charArray[i+1]=='+'))
+                {
+                    word=word+charArray[i];
+                    word=word+charArray[i+1];
+                    Tokenization(word,token.lineNumber);
+                    word="";
+                    i++;
+                }
+                else if(((i+1)<charArray.length && charArray[i+1]=='+'))
                 {
                     word=word+charArray[i];
                     word=word+charArray[i+1];
@@ -505,6 +521,33 @@ public class Lexical_analyzer {
                 {
                     word=word+charArray[i];
                 }
+               else if(word.contains("."))
+                {
+                    if(charArray[i-1]=='e' || charArray[i-1]=='E')
+                    {
+                        for(int m=0;m<digits.length;m++)
+                        {
+                            if(charArray[i+1]==digits[m])
+                            {
+                                word=word+charArray[i];
+                                break;
+                            }
+                            else if(m==digits.length-1)
+                            {
+                                Tokenization(word,token.lineNumber);
+                                word="";
+                                i--;
+                            }
+                        }
+                    }
+                    else
+                    {
+                       Tokenization(word,token.lineNumber);
+                       word="";
+                       i--; 
+                    }
+                            
+                }
                 else
                 {
                    Tokenization(word,token.lineNumber);
@@ -517,7 +560,7 @@ public class Lexical_analyzer {
             {
                 if("".equals(word))
                 {
-                if((i+1)<charArray.length && charArray[i+1]=='=')
+                if((i+1)<charArray.length && (charArray[i+1]=='=' || charArray[i+1]=='-'))
                 {
                     word=word+charArray[i];
                     word=word+charArray[i+1];
@@ -531,6 +574,33 @@ public class Lexical_analyzer {
                     Tokenization(word,token.lineNumber);
                     word="";
                 }
+                }
+                else if(word.contains("."))
+                {
+                    if(charArray[i-1]=='e' || charArray[i-1]=='E')
+                    {
+                        for(int m=0;m<digits.length;m++)
+                        {
+                            if(charArray[i+1]==digits[m])
+                            {
+                                word=word+charArray[i];
+                                break;
+                            }
+                            else if(m==digits.length-1)
+                            {
+                                Tokenization(word,token.lineNumber);
+                                word="";
+                                i--;
+                            }
+                        }
+                    }
+                    else
+                    {
+                       Tokenization(word,token.lineNumber);
+                       word="";
+                       i--; 
+                    }
+                            
                 }
                 else if(word.contains("\""))
                 {
@@ -575,7 +645,7 @@ public class Lexical_analyzer {
                 }
             }
             
-            else if(charArray[i]=='/')
+            else if(charArray[i]=='/')  //ashar yeh dekhlena single line comment k liye
             {
                 if("".equals(word))
                 {
@@ -591,7 +661,7 @@ public class Lexical_analyzer {
                 {
                     word=word+charArray[i];
                     word=word+charArray[i+1];
-                    for(int k=i+2;k<charArray.length;k++)
+                    for(int k=i+2;k <charArray.length;k++)
                     {
                         word=word+charArray[k];
                     }
@@ -729,7 +799,7 @@ public class Lexical_analyzer {
                 if(charArray[i]== ';' || charArray[i]== '(' || charArray[i]== ')' || charArray[i]== '{' ||
                 charArray[i]== '}' || charArray[i]=='[' || charArray[i]== ']' || charArray[i]== '?' || charArray[i]== '~' || charArray[i]== '`' 
                 || charArray[i]== '^' || charArray[i]== ',' || charArray[i]== '`' || charArray[i]== '@' || 
-                        charArray[i]== '#' ||charArray[i]== '$')
+                        charArray[i]== '#')
                     //else if char array[i] is one of these then makes seperate tokens for them
                 {
                     word=word+charArray[i];
@@ -738,44 +808,47 @@ public class Lexical_analyzer {
                     
                 }
             }
+            
+           
         }
     }
     public void Tokenization(String value,int lineNumber) throws IOException
     {   
-        int a=0;
+        int kwCheck=0;
         Info Check=new Info();
-        String value1=CheckDataTypes(value);
-            if("ID".equals(value1))  //for Identifier and keywords, if not a keyword then it will be an identifier
+        char[] d=value.toCharArray();
+        String dataType=CheckDataTypes(value);
+            if("ID".equals(dataType))  //for Identifier and keywords, if not a keyword then it will be an identifier
             {
-                for(int i=0;i<33;i++)
+                for(int i=0;i<Check.KeywordsList.size();i++)
                 {
                     if(value.equals(Check.KeywordsList.get(i).word))
                     {
                         token = new Token(Check.KeywordsList.get(i).className,value,lineNumber);
                         tokenlist.add(token);
-                        a++;
+                        kwCheck++;
                         break;
                     }
                 }
-                if(a==0)
+                if(kwCheck==0)
                 {
                     token = new Token("Identifier",value,lineNumber);
                     tokenlist.add(token);
                 }
             }
-            else if("Integer".equals(value1))
+            else if("Integer".equals(dataType))
             {
                 token = new Token("Integer Constant",value,lineNumber);
                 tokenlist.add(token);
             }
             
-            else if("Float".equals(value1))
+            else if("Float".equals(dataType))
             {
                 token = new Token("Float Constant",value,lineNumber);
                 tokenlist.add(token);
             }
             
-            else if("Character".equals(value1))
+            else if("Character".equals(dataType))
             {
                 char[] c = value.toCharArray();
                 String temp="";
@@ -787,7 +860,7 @@ public class Lexical_analyzer {
                 tokenlist.add(token);
             }
             
-            else if("String".equals(value1))
+            else if("String".equals(dataType))
             {
                 char[] c = value.toCharArray();
                 String temp="";
@@ -799,29 +872,67 @@ public class Lexical_analyzer {
                 tokenlist.add(token);
             }
                 
+            else if(value.contains("\\"))
+            {
+                if(d[0]=='\'' && d[d.length-1]=='\'')
+                {
+                    for(int i=0;i<characters.length;i++)
+                    {
+                    if(d[2]==characters[i])
+                    {
+                        char[] c = value.toCharArray();
+                        String temp="";
+                        for(int k=1;k<c.length-1;k++)
+                        {
+                           temp = temp+c[k];
+                        }
+                        token=new Token("Character Constant",temp,lineNumber);
+                        tokenlist.add(token);
+                        break;
+                    }
+                    else if(i==characters.length-1)
+                    {
+                        token = new Token("Invalid Word",value,lineNumber);
+                        tokenlist.add(token);
+                    }
+                    }
+                }
+            }
             else if(value.length() <= 2)
             {
-                for(int i=0;i<27;i++)
+                int a=0;
+                for(int i=0;i<Check.OperatorsList.size();i++)
                 {
                 if(value.equals(Check.OperatorsList.get(i).word))
                 {
                     token = new Token(Check.OperatorsList.get(i).className,value,lineNumber);
                     tokenlist.add(token);
+                    a++;
                     break;
                 }
                 }
                 
-                for(int i=0;i<11;i++)
+                for(int i=0;i<Check.PunctuatorsList.size();i++)
                 {
                     if(value.equals(Check.PunctuatorsList.get(i).word))
                     {
                     token = new Token(Check.PunctuatorsList.get(i).className,value,lineNumber);
                     tokenlist.add(token);
+                    a++;
                     break;
                     }
                 }
+                if(a==0)
+                {
+                if("Invalid".equals(dataType))
+                {
+                    token = new Token("Invalid Word",value,lineNumber);
+                    tokenlist.add(token);
+                }
+                }
             }
-            else
+            
+            else if("Invalid".equals(dataType))
             {
                 token = new Token("Invalid Word",value,lineNumber);
                 tokenlist.add(token);

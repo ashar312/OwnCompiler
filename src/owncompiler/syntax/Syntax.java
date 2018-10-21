@@ -60,7 +60,7 @@ public class Syntax {
         return false;
     }
     
-    private boolean ToCheckIfTrue(String str){
+    public boolean ToCheckIfTrue(String str){
         return this.TokenList.get(index).classPart.equals(str);
     }
     
@@ -107,9 +107,69 @@ public class Syntax {
     
     private boolean body(){
         
+        
+        
         return false;
     }
     
+    private boolean fn_call(){
+        if(ToCheckIfTrue("ID")){
+            index++;
+            if(ToCheckIfTrue("(")){
+            index++;
+                if(para0())
+                    {
+            
+                    }
+        }
+        
+        
+        }
+        return false;
+    }
+    private boolean para0(){
+        if(para()){
+            
+        }
+        else if(ToCheckIfTrue(")")){
+            index++;
+            return true;
+        }
+        
+        return false;
+    }
+    
+    
+    private boolean para(){
+        if(ToCheckIfTrue("ID")){
+            index++;
+            if(para2()){
+                return true;
+            }
+        }
+        else if(checkkey.Constant()){
+            index++;
+            if(para2()){
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    private boolean para2(){
+        if(ToCheckIfTrue(")")){
+            index++;
+            return true;
+        }
+        else if(ToCheckIfTrue(",")){
+            index++;
+            if(para()){
+                return true;
+            }
+        }
+        return false;
+    }
     
     private boolean func_Dec(){
          

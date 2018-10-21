@@ -1,0 +1,26 @@
+/*      
+empty Main()
+{
+String string = ReadFromFunction(); !!
+Integer a = 55;
+a = 55.6;
+Consider(Integer i=0;i<10;i++) //This is comment 1
+{
+asLongas(right)
+{
+points.Token.classPart=="Str";
+flag=wrong;
+}
+}
+decimal = 66.99.88;
+char c = "zee@rtv\"$abc";  //This is comment 2	
+bool c:b,c::b,b==a+-c;
+}
+}
+closed class AM{
+}
+accessible String ReadFromFile()
+{
+respondWith "str";
+}
+*/
