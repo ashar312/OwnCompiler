@@ -93,19 +93,89 @@ public class Class extends Syntax {
         }
         return false;
     }
-    private boolean class1(){
+    private boolean INH(){
+        if(ToCheckIfTrue("extends")){
+            index++;
+            if(ToCheckIfTrue("ID")){
+                index++;
+                return true;
+            }
+        }
+        else if(ToCheckIfTrue("{")){
+            return true;
+        }
+        return false;
+    }
+    private boolean cbody(){
+        if(checkkey.DT()){
+            index++;
+            if(cbody1()){
+                return true;
+            }
+        }
+        else if(ToCheckIfTrue("ID")){
+            index++;
+            if(cbody2()){
+                return true;
+            }
+        }
+        else if(checkkey.AM()){
+            index++;
+            if(cbody3()){
+                return true;
+            }
+        }
+        return false;
+    }
+    private boolean cbody2(){
+        if(AOB()){
+            return true;
+        }
+        else{
+            if(ToCheckIfTrue("ID")){
+                index++;
+                if(obj_dec()){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    private boolean cbody3(){
+        if(ToCheckIfTrue("ID")){
+            index++;
+            if(ToCheckIfTrue("(")){
+                index++;
+                if(args()){
+                    if(ToCheckIfTrue(")")){
+                        index++;
+                        if(ToCheckIfTrue("{")){
+                            index++;
+                            if(conbody()){
+                                if(ToCheckIfTrue("}")){
+                                    index++;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+                
+        }
+        else{
+            
+        }
+        return false;
+    }
+    private boolean cbody1(){
         
         return false;
     }
-    private boolean class1(){
+    private boolean list(){
         
         return false;
     }
-    private boolean class1(){
-        
-        return false;
-    }
-    private boolean class1(){
+    private boolean ADT(){
         
         return false;
     }
